@@ -46,15 +46,10 @@ public class UserService implements UserDetailsService{
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user;
 
-        try {
-            user = userRepository.findByEmail(email);
+        user = userRepository.findByEmail(email);
 
-                //if (user == null){
-                //    throw new UsernameNotFoundException("User " + email + " not found");
-                //}
-        } catch(IncorrectResultSizeDataAccessException e) {
+        if (user == null)
             throw new UsernameNotFoundException("User " + email + " not found");
-        }
 
         List<GrantedAuthority> authorityList = buildAuthorities(user.getUserRoles());
         return buildUser(user, authorityList);

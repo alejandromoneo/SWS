@@ -26,9 +26,9 @@ public class UserController {
     @Autowired
     RoleService roleService;
 
-    @GetMapping("/")
+    @GetMapping({"/","/index"})
     public String index(){
-        return "redirect:/login";
+        return "index";
     }
 
     @GetMapping("/login")

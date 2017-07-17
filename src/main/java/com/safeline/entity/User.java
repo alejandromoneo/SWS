@@ -52,7 +52,7 @@ public class User {
     private String phone;
 
     @Column(nullable = false)
-    private boolean enabled;
+    private boolean enabled = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
