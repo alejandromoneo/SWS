@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="common/header :: common-header"/>
+<style>
+
+</style>
+<body>
+<div th:replace="common/header :: navbar(login)"/>
+
+<div class="container main">
+    <div class="card">
+        <div class="card-header">
+            <i class="fa fa-table"></i>
+            User Management
+        </div>
+        <div class="card-block">
+            <div class="table-responsive" id="user-table">
+                <table th:fragment="userDataTable" id="user-data-table" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>firstName</th>
+                            <th>lastName</th>
+                            <th>email</th>
+                            <th>company</th>
+                            <th>enabled</th>
+                            <th>controls</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-th-each="user : ${userList}" th:id="${user.id}" ondblclick="viewUser(this)">
+                            <td data-th-text="${user.id}"></td>
+                            <td data-th-text="${user.firstName}"></td>
+                            <td data-th-text="${user.lastName}"></td>
+                            <td data-th-text="${user.email}"></td>
+                            <td data-th-text="${user.company}"></td>
+                            <td data-th-text="${user.enabled}"></td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn-view btn btn-outline-info btn-sm" th:id="${user.id}" onclick="viewUser(this)">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn-edit btn btn-outline-success btn-sm" th:id="${user.id}">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn-delete btn btn-outline-danger btn-sm" th:id="${user.id}">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <script th:inline="javascript">
+                        /*<![CDATA[*/
+                        $(function() {
+                            $("#user-data-table").DataTable({
+                                "stateSave": true,
+                                "columnDefs": [
+                                    {
+                                        "targets": 0,
+                                        "visible": false,
+                                        "searchable": true,
+                                        "orderable": false
+                                    },
+                                    {
+                                    "targets": 6,
+                                    "visible": true,
+                                    "searchable": false,
+                                    "orderable": false
+                                    }
+                                ],
+                                "language": {
+                                    "sProcessing":    [[#{dataTables.processing}]],
+                                    "sLengthMenu":    [[#{dataTables.lengthMenu}]],
+                                    "sZeroRecords":   [[#{dataTables.zeroRecords}]],
+                                    "sEmptyTable":    [[#{dataTables.emptyTable}]],
+                                    "sInfo":           [[#{dataTables.info}]],
+                                    "sInfoEmpty":      [[#{dataTables.infoEmpty}]],
+                                    "sInfoFiltered":   [[#{dataTables.infoFiltered}]],
+                                    "sInfoPostFix":    "",
+                                    "sSearch":         [[#{dataTables.search}]],
+                                    "sUrl":            "",
+                                    "sInfoThousands":  ",",
+                                    "sLoadingRecords": [[#{dataTables.loadingRecords}]],
+                                    "oPaginate": {
+                                        "sFirst":    [[#{dataTables.paginateFirst}]],
+                                        "sLast":    [[#{dataTables.paginateLast}]],
+                                        "sNext":    [[#{dataTables.paginateNext}]],
+                                        "sPrevious": [[#{dataTables.paginatePrevious}]]
+                                    }
+                                }
+                            });
+                            /*]]>*/
+                        });
+                        function viewUser(self) {
+                            $("#user-modal").load('/ajax/users/getUser/' + self.id, function(response, status, xhr ) {
+                                if (status == "success")
+                                    $("#user-modal").modal();
+                                else{
+                                    var msg = "Sorry but there was an error: ";
+                                    alert(msg + xhr.status + " " + xhr.statusText );
+                                }
+                            });
+                        }
+                    </script>
+                </table>
+            </div>
+        </div>
+
+        <div id="user-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div th:fragment="formUser" class="modal-dialog modal-lg" th:if="${user}">
+                <form id="user-form" method="post" th:object="${user}">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">User information of <span th:text="${user.firstName}"></span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="modal-user-body" class="modal-body">
+                            <input th:field="*{id}" type="hidden"/>
+                            <div th:class="${#fields.hasErrors('firstName')} ? 'form-group row has-danger' : 'form-group row'">
+                                <label for="firstName" class="col-sm-2 col-form-label" th:text="#{signup.label.firstName}"></label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                        <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger' : 'form-control'" id="firstName" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('firstName')}" class="form-control-feedback" th:text="#{signup.error.firstName}"></div>
+                                </div>
+                            </div>
+                            <div th:class="${#fields.hasErrors('lastName')} ? 'form-group row has-danger' : 'form-group row'">
+                                <label for="lastName" class="col-sm-2 col-form-label" th:text="#{signup.label.lastName}"></label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                        <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger' : 'form-control'" id="lastName" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('lastName')}" class="form-control-feedback" th:text="#{signup.error.lastName}"></div>
+                                </div>
+                            </div>
+                            <div th:class="'form-group row'">
+                                <label for="email" class="col-sm-2 col-form-label" th:text="#{signup.label.email}"></label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                        <input th:field="*{email}" type="email" th:class="'form-control'" id="email" th:placeholder="#{signup.placeholder.email}" required="required" readonly="readonly"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:class="${#fields.hasErrors('password')} ? 'form-group row has-danger' : 'form-group row'">
+                                <label for="password" class="col-sm-2 col-form-label" th:text="#{signup.label.password}"></label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                        <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : 'form-control'" id="password" th:placeholder="#{signup.placeholder.password}"/>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label" style="margin-top: 4px;">
+                                            <input type="checkbox" id="form-check-input" class="form-check-input" th:text="#{signup.input.password}"/>
+                                        </label>
+                                    </div>
+                                    <div class="input-group">
+                                        <button type="button" id="btn-password" class="btn btn-danger">Change Password</button>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('password')}" class="form-control-feedback" th:text="#{signup.error.password}"></div>
+                                </div>
+                            </div>
+                            <div th:class="${#fields.hasErrors('company')} ? 'form-group row has-danger' : 'form-group row'">
+                                <label for="company" class="col-sm-2 col-form-label" th:text="#{signup.label.company}"></label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
+                                        <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger' : 'form-control'" id="company" th:placeholder="#{signup.placeholder.company}"/>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('company')}" class="form-control-feedback" th:text="#{signup.error.company}"></div>
+                                </div>
+                            </div>
+                            <div th:class="${#fields.hasErrors('phone')} ? 'form-group row has-danger' : 'form-group row'">
+                                <label for="phone" class="col-sm-2 col-form-label" th:text="#{signup.label.phone}"></label>
+                                <div class="col-sm-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                        <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : 'form-control'" id="phone" th:placeholder="#{signup.placeholder.phone}" required="required"/>
+                                    </div>
+                                    <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="phone" class="col-sm-2 col-form-label" th:text="#{signup.label.phone}"></label>
+                                <div class="col-sm-10">
+                                    <ul class="list-group" data-th-each="userRole : ${user.userRoles}">
+                                        <li class="list-group-item justify-content-between">
+                                            <span data-th-text="${userRole.role.name}"/>
+                                            <button type="button" class="btn-delete btn btn-outline-danger btn-sm">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" id="btn-submit" class="btn btn-primary">Send message</button>
+                        </div>
+                        <script>
+                            $(function() {
+                                $("#form-check-input").click(function () {
+                                    if ($("#password").attr("type") == "password")
+                                        $("#password").attr("type","text")
+                                    else
+                                        $("#password").attr("type","password")
+                                });
+
+                                $("#btn-password").click(function () {
+                                    $("#user-modal").load('/ajax/users/changeUserPassword', $("#user-form").serializeArray(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
+                                        if (status != "success"){
+                                            var msg = "Sorry but there was an error: ";
+                                            alert(msg + xhr.status + " " + xhr.statusText );
+                                        }
+                                    });
+                                });
+
+                                $('#user-form').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
+                                    e.preventDefault(); //anulamos el submit
+
+                                    $("#user-modal").load('/ajax/users/updateUser', $("#user-form").serializeArray(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
+                                        if (status != "success"){
+                                            var msg = "Sorry but there was an error: ";
+                                            alert(msg + xhr.status + " " + xhr.statusText );
+                                        }else{
+                                            $("#user-table").load('/ajax/users/getUsers', $("#user-form").serialize(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
+                                                if (status != "success"){
+                                                    var msg = "Sorry but there was an error: ";
+                                                    alert(msg + xhr.status + " " + xhr.statusText );
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="common/header :: scriptDatatables"/>
+<script>
+    $(function() {
+        /* AJAX SETUP FOR ADD CSRK TOKEN HEADER IN ALL REQUEST */
+        $.ajaxSetup({
+            headers:
+                { 'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content') }
+        });
+        /* END AJAX SETUP */
+    });
+</script>
+</body>
+</html>

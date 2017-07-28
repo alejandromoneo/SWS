@@ -73,7 +73,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
-                    <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="phone" th:placeholder="#{signup.placeholder.phone}"/>
+                    <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="phone" th:placeholder="#{signup.placeholder.phone}" required="required"/>
                 </div>
                 <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
             </div>
@@ -91,7 +91,7 @@
     </form>
 </div>
 <script>
-    $(document).ready(function() {
+    $(function() {
         $("#form-check-input").click(function () {
             if ($("#password").attr("type") == "password")
                 $("#password").attr("type","text")

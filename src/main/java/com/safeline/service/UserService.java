@@ -34,12 +34,20 @@ public class UserService implements UserDetailsService{
         return (userRepository.findByEmail(email) != null);
     }
 
-    public void registerUser(User user){
+    public void encodePassword(User user){
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
+    }
 
+    public void saveUser(User user){
         userRepository.save(user);
     }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
+    }
+
+    public User getUser(long id) { return userRepository.findOne(id); }
 
     /* SPRING SECURITY */
     @Override
@@ -69,4 +77,5 @@ public class UserService implements UserDetailsService{
 
         return new ArrayList<GrantedAuthority>(grantedAuthoritySet);
     }
+    /* END SPRING SECURITY */
 }

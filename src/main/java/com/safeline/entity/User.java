@@ -1,12 +1,9 @@
 package com.safeline.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,40 +19,39 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(length = 30, nullable = false, unique = true)
-    @NotBlank
-    @Size(min=2, max=30)
+    @Column(length = 30, nullable = false)
+    @NotBlank(groups = {GroupSignUp.class, GroupUpdate.class})
+    @Size(min=2, max=30, groups = {GroupSignUp.class, GroupUpdate.class})
     private String firstName;
 
-    @Column(length = 60, nullable = false, unique = true)
-    @NotBlank
-    @Size(min=2, max=60)
+    @Column(length = 60, nullable = false)
+    @NotBlank(groups = {GroupSignUp.class, GroupUpdate.class})
+    @Size(min=2, max=60, groups = {GroupSignUp.class, GroupUpdate.class})
     private String lastName;
 
     @Column(length = 60, nullable = false, unique = true)
-    @NotBlank
-    @Email
+    @NotBlank(groups = GroupSignUp.class)
+    @Email(groups = GroupSignUp.class)
     private String email;
 
     @Column(nullable = false, length = 60)
-    @NotNull
-    @Size(min=8, max=60)
+    @NotBlank(groups = {GroupSignUp.class, GroupChangePassword.class})
+    @Size(min=8, max=60, groups = {GroupSignUp.class, GroupChangePassword.class})
     private String password;
 
     @Column(length = 45)
-    @Size(min=0, max=45)
+    @Size(min=0, max=45, groups = {GroupSignUp.class, GroupUpdate.class})
     private String company;
 
     @Column(length = 15, nullable = false)
-    @NotBlank
-    @Size(min=5, max=15)
+    @NotBlank(groups = {GroupSignUp.class, GroupUpdate.class})
+    @Size(min=5, max=15, groups = {GroupSignUp.class, GroupUpdate.class})
     private String phone;
 
     @Column(nullable = false)
     private boolean enabled = true;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonIgnore
     private Set<UserRole> userRoles = new HashSet<>();
 
     public User() {
@@ -161,4 +157,24 @@ public class User {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", company='" + company + '\'' +
+                ", phone='" + phone + '\'' +
+                ", enabled=" + enabled + '}';
+    }
+
+    public interface GroupSignUp {}
+
+    public interface GroupUpdate {}
+
+    public interface GroupChangePassword {}
+
 }

@@ -1,7 +1,5 @@
 package com.safeline.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +15,6 @@ public class Role {
     private String name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
     private Set<UserRole> userRoles = new HashSet<>();
 
     public Role() {}

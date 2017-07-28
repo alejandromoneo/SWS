@@ -36,6 +36,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
     @Autowired
     private CustomAuthFailureHandler customAuthenticationFailureHandler;
 
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
     private static final String SALT = "salt"; // Salt should be protected carefully
 
     @Bean
@@ -58,7 +61,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             "/contact/**",
             "/error/**/*",
             "/console/**",
-            "/signup/**"
+            "/users/**",
+            "/ajax/users/**",
+            "/signup/**",
+            "/sourcelist/**"
     };
 
     @Override
@@ -66,6 +72,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
         http.authorizeRequests()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .anyRequest().authenticated()
+                .and()
+            .httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint) //Habilitamos la seguridad en el api rest
                 .and()
             .formLogin() //a login form is showed when no authenticated request
                 .loginPage("/login")
@@ -84,7 +92,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //necesario ponerlo así en vez de .logoutUrl("/logout") cuando .csrf() esta habilitado, ya que tendriamos que hacer un post en ese caso
                 .logoutSuccessUrl("/login")
                 .deleteCookies("remember-me")
-                .permitAll();
+                .permitAll()
+                .and()
+            .csrf()
+                .ignoringAntMatchers("/sourcelist/**"); //deshabilitamos la proteccion csrf solo en la api source
     }
 
     @Component
