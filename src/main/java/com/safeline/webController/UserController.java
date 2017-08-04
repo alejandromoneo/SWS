@@ -1,22 +1,14 @@
 package com.safeline.webController;
 
+import com.safeline.entity.Role;
 import com.safeline.entity.User;
-import com.safeline.entity.UserRole;
-import com.safeline.service.RoleService;
 import com.safeline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by alejandromoneomartinez on 11/7/17.
@@ -27,17 +19,14 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    RoleService roleService;
-
     @GetMapping({"/","/index"})
     public String index(){
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login(){
-        return "login";
+    @GetMapping("/signin")
+    public String signIn(){
+        return "signIn";
     }
 
     @GetMapping("/signup")
@@ -59,76 +48,107 @@ public class UserController {
             return "signUp";
         }
         else {
-            Set<UserRole> userRoles = new HashSet<>();
-            userRoles.add(new UserRole(user, roleService.findByName("ROLE_USER")));
-            user.setUserRoles(userRoles);
-
-            userService.encodePassword(user);
-            userService.saveUser(user);
-
-            return "redirect:/login";
+            userService.registerUser(user);
+            return "redirect:/signin";
         }
     }
 
-    @GetMapping("/users")
+    @GetMapping("/userManagement")
     public String users(Model model){
-        List<User> userList = userService.getAllUsers();
 
-        model.addAttribute("userList", userList);
+        model.addAttribute("userList", userService.getAllUsers());
 
         return "userManagement";
     }
 
-    @GetMapping("/ajax/users/getUsers")
-    public String getUsers(Model model){
-        List<User> userList = userService.getAllUsers();
+    @GetMapping("/ajax/userManagement/getUsers")
+    public String getUsers(Model model) {
 
-        model.addAttribute("userList", userList);
+        model.addAttribute("userList", userService.getAllUsers());
 
         return "userManagement :: userDataTable";
     }
 
-    @GetMapping("/ajax/users/getUser/{idUser}")
-    public String getUser(@PathVariable("idUser") Long idUser, Model model){
-        User user = userService.getUser(idUser);
+    @GetMapping("/ajax/userManagement/addUser")
+    public String addUser(Model model){
+
+        User user = new User();
 
         model.addAttribute("user", user);
 
-        return "userManagement :: formUser";
+        return "userManagement :: userAddForm";
     }
 
-    @PostMapping("/ajax/users/updateUser")
-    public String updateUser(@Validated(User.GroupUpdate.class) User user, Errors errors, Model model){
+    @PostMapping("/ajax/userManagement/addUser")
+    public String addUserPost(@Validated(User.GroupSignUp.class) User user, Errors errors, Model model) {
         if (errors.hasErrors()) {
-            return "userManagement :: formUser";
+            return "userManagement :: userAddForm";
         }
-
-        User userBd = userService.getUser(user.getId());
-
-        userBd.setFirstName(user.getFirstName());
-        userBd.setLastName(user.getLastName());
-        userBd.setCompany(user.getCompany());
-        userBd.setPhone(user.getPhone());
-
-        model.addAttribute("user", userBd);
-
-        userService.saveUser(userBd);
-
-        return "userManagement :: formUser";
+        if(userService.checkEmailExists(user.getEmail()))  {
+            model.addAttribute("emailExists", true);
+            return "userManagement :: userAddForm";
+        }
+        else {
+            userService.registerUser(user);
+            model.addAttribute("roleList", userService.getAllRoles());
+            return "userManagement :: userForm";
+        }
     }
 
-    @PostMapping("/ajax/users/changeUserPassword")
+    @GetMapping("/ajax/userManagement/getUser/{idUser}")
+    public String getUser(@PathVariable("idUser") Long idUser, Model model){
+
+        model.addAttribute("user", userService.getUser(idUser));
+        model.addAttribute("roleList", userService.getAllRoles());
+
+        return "userManagement :: userForm";
+    }
+
+    @PostMapping("/ajax/userManagement/deleteUser")
+    public String deleteUser(@RequestParam Long userId, Model model){
+
+        userService.deleteUser(userId);
+
+        model.addAttribute("userList", userService.getAllUsers());
+
+        return "userManagement :: userDataTable";
+    }
+
+    @PostMapping("/ajax/userManagement/updateUserInformation")
+    public String updateUser(@Validated(User.GroupUpdate.class) User user, Errors errors, Model model){
+        if (errors.hasErrors())
+            return "userManagement :: userInformationForm";
+
+        model.addAttribute("user", userService.updateUserInformation(user));
+
+        return "userManagement :: userInformationForm";
+    }
+
+    @PostMapping("/ajax/userManagement/changeUserPassword")
     public String usersPost(@Validated(User.GroupChangePassword.class) User user, Errors errors, Model model){
         if (errors.hasErrors())
-            return "userManagement :: formUser";
+            return "userManagement :: userPasswordForm";
 
-        User userBd = userService.getUser(user.getId());
+        userService.changeUserPassword(user);
 
-        userBd.setPassword(user.getPassword());
-        userService.encodePassword(userBd);
+        return "userManagement :: userPasswordForm";
+    }
 
-        userService.saveUser(userBd);
+    @PostMapping("/ajax/userManagement/addUserRole")
+    public String addUserRole(@RequestParam Long userId, @RequestParam String roleName, Model model){ //@RequestParam lo utilizaremos cuando necesitemos valores primitivos, ya que con el @ModelAtribute necesitamos el constructor vacio, solo lo usaremos con objectos nuestros
 
-        return "userManagement :: formUser";
+        model.addAttribute("user", userService.addUserRole(userId, roleName));
+        model.addAttribute("roleList", userService.getAllRoles());
+
+        return "userManagement :: userRoleForm";
+    }
+
+    @PostMapping("/ajax/userManagement/deleteUserRole")
+    public String deleteUserRole(@RequestParam Long userId, @RequestParam String roleName, Model model){ //@RequestParam lo utilizaremos cuando necesitemos valores primitivos, ya que con el @ModelAtribute necesitamos el constructor vacio, solo lo usaremos con objectos nuestros
+
+        model.addAttribute("user", userService.deleteUserRole(userId, roleName));
+        model.addAttribute("roleList", userService.getAllRoles());
+
+        return "userManagement :: userRoleForm";
     }
 }

@@ -1,7 +1,7 @@
 package com.safeline;
 
 import com.safeline.entity.Role;
-import com.safeline.service.RoleService;
+import com.safeline.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +19,7 @@ import java.util.List;
 public class SwsApplication extends WebMvcConfigurerAdapter {
 
 	@Autowired
-	private RoleService roleService;
+	private RoleRepository roleRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SwsApplication.class, args);
@@ -30,11 +30,11 @@ public class SwsApplication extends WebMvcConfigurerAdapter {
 		return new CommandLineRunner() {
 			@Override
 			public void run(String... strings) throws Exception {
-				if (roleService.findByName("ROLE_USER") == null && roleService.findByName("ROLE_ADMIN") == null){
+				if (roleRepository.findByName("ROLE_USER") == null && roleRepository.findByName("ROLE_ADMIN") == null){
 					List<Role> roleList = new ArrayList<Role>();
 					roleList.add(new Role("ROLE_USER"));
 					roleList.add(new Role("ROLE_ADMIN"));
-					roleService.save(roleList);
+					roleRepository.save(roleList);
 				}
 			}
 		};

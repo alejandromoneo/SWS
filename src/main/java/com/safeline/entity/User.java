@@ -4,8 +4,10 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -49,9 +51,10 @@ public class User {
     private String phone;
 
     @Column(nullable = false)
+    @NotNull(groups = {GroupUpdate.class})
     private boolean enabled = true;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<UserRole> userRoles = new HashSet<>();
 
     public User() {
@@ -138,6 +141,18 @@ public class User {
 
     public void setUserRoles(Set<UserRole> userRoles) {
         this.userRoles = userRoles;
+    }
+
+    public void addUserRole(Role role){
+        this.userRoles.add(new UserRole(this,role));
+    }
+
+    public void deleteUserRole(String roleName){
+        for (Iterator<UserRole> i = this.userRoles.iterator(); i.hasNext();) {
+            UserRole userRole = i.next();
+            if (userRole.getRole().getName().equalsIgnoreCase(roleName))
+                i.remove();
+        }
     }
 
     @Override

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<body>
+
+<!-- AJAX SETUP -->
+<div th:fragment="scriptAjaxSetup">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(function() {
+            $.ajaxSetup({
+                /* AJAX SETUP FOR ADD CSRK TOKEN HEADER IN ALL REQUEST */
+                headers:
+                    { 'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content') },
+                /* SHOW CUSTOM MODAL ERROR IF REQUES FAILS */
+                error : function(jqXHR, textStatus, errorThrown) {
+                    var errorText;
+                    switch (jqXHR.status) {
+                        case 0:
+                            errorText = [[#{error.modal.code.0}]];
+                            break;
+                        case 400:
+                            errorText = [[#{error.modal.code.400}]];
+                            break;
+                        case 401:
+                            errorText = [[#{error.modal.code.401}]];
+                            break;
+                        case 403:
+                            errorText = [[#{error.modal.code.403}]];
+                            break;
+                        case 404:
+                            errorText = [[#{error.modal.code.404}]];
+                            break;
+                        case 406:
+                            errorText = [[#{error.modal.code.406}]];
+                            break;
+                        case 407:
+                            errorText = [[#{error.modal.code.407}]];
+                            break;
+                        case 408:
+                            errorText = [[#{error.modal.code.408}]];
+                            break;
+                        case 415:
+                            errorText = [[#{error.modal.code.415}]];
+                            break;
+                        case 500:
+                            errorText = [[#{error.modal.code.500}]];
+                            break;
+                        case 502:
+                            errorText = [[#{error.modal.code.502}]];
+                            break;
+                        case 503:
+                            errorText = [[#{error.modal.code.503}]];
+                            break;
+                        case 505:
+                            errorText = [[#{error.modal.code.505}]];
+                            break;
+                        case 507:
+                            errorText = [[#{error.modal.code.507}]];
+                            break;
+                        case 511:
+                            errorText = [[#{error.modal.code.511}]];
+                            break;
+                        default:
+                            errorText = "Error:" + jqXHR.status + " " + textStatus + " " + errorThrown;
+                    }
+                    bootbox.alert({
+                        title: [[#{error.modal.title}]],
+                        message: errorText,
+                        buttons: {
+                            ok: {
+                                label: [[#{common.close}]],
+                                className: 'btn btn-secondary'
+                            }
+                        },
+                        className: 'alert-danger',
+                        backdrop: true
+                    });
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+</div>
+<!-- END AJAX SETUP -->
+
+<!-- CONFIRM MODAL -->
+<div th:fragment="scriptConfirmModal">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // size = "large","small"
+        function confirmModal(callback, size, message, title) {
+            bootbox.confirm({
+                title: title,
+                message: message,
+                size: size,
+                buttons: {
+                    confirm: {
+                        label: '<i class="fa fa-check" aria-hidden="true"></i> ' + [[#{common.confirm}]],
+                        className: 'btn btn-primary'
+                    },
+                    cancel: {
+                        label: '<i class="fa fa-times" aria-hidden="true"></i> ' + [[#{common.cancel}]],
+                        className: 'btn btn-secondary'
+                    }
+                },
+                callback: function (result) {
+                    callback(result)
+                },
+                backdrop: true
+            });
+        };
+        /*]]>*/
+    </script>
+</div>
+<!-- END CONFIRM MODAL -->
+
+<!-- DATATABLE -->
+<div th:fragment="scriptDatatables">
+    <script src="/js/dataTables/jquery.dataTables.min.js"/>
+    <script src="/js/dataTables/dataTables.bootstrap4.min.js"/>
+</div>
+<!-- END DATATABLE -->
+</body>
+</html>

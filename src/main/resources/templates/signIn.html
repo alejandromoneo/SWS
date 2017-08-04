@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head th:replace="common/header :: common-header"/>
+<style>
 
+</style>
 <body>
-    <div th:replace="common/header :: navbar(login)"/>
+    <div th:replace="common/body :: navbar(signin)"/>
     <div class="container main">
         <div class="row container">
             <div class="col-lg-6 mx-auto">
-                <div class="alert alert-danger" th:if="${param.disabled}"/>
+                <div class="alert alert-danger alert-dismissible block" role="alert" th:if="${param.disabled}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <span th:text="#{signin.error.disabled}"></span>
+                </div>
 
-                <div class="alert alert-danger alert-dismissible block" role="alert" th:if="${param.error}">
+                <div class="alert alert-warning alert-dismissible block" role="alert" th:if="${param.error}">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <span th:text="#{signin.error.badcredentials}"></span>
                 </div>
@@ -19,7 +24,7 @@
                     <h2 class="card-title" th:text="#{signin.h2.signin}"></h2>
                     <img class="card-img-top mx-auto" width="30%" src="/img/log-tip-2.png" alt="Card image cap"/>
                     <div class="card-block">
-                        <form method="post" th:action="@{/login}">
+                        <form method="post" th:action="@{/signin}">
                             <div class="form-group row">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
@@ -62,7 +67,7 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
+        $(function() {
             // Show password
             $("#form-check-input").click(function () {
                 if ($("#password").attr("type") == "password")

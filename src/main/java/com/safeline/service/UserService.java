@@ -1,7 +1,9 @@
 package com.safeline.service;
 
+import com.safeline.entity.Role;
 import com.safeline.entity.User;
 import com.safeline.entity.UserRole;
+import com.safeline.repository.RoleRepository;
 import com.safeline.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -28,19 +30,51 @@ public class UserService implements UserDetailsService{
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     public boolean checkEmailExists(String email) {
         return (userRepository.findByEmail(email) != null);
     }
 
-    public void encodePassword(User user){
+    private void encodePassword(User user){
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
     }
 
-    public void saveUser(User user){
-        userRepository.save(user);
+    public void registerUser(User user){
+        this.encodePassword(user);
+        user.addUserRole(roleRepository.findByName("ROLE_USER"));
+        this.saveUser(user);
+    }
+
+    public User updateUserInformation(User user){
+        User userBd = this.getUser(user.getId());
+
+        userBd.setFirstName(user.getFirstName());
+        userBd.setLastName(user.getLastName());
+        userBd.setCompany(user.getCompany());
+        userBd.setPhone(user.getPhone());
+        userBd.setEnabled(user.isEnabled());
+
+        return this.saveUser(userBd);
+    }
+
+    public void changeUserPassword(User user){
+        User userBd = this.getUser(user.getId());
+        userBd.setPassword(user.getPassword());
+        this.encodePassword(userBd);
+        this.saveUser(userBd);
+    }
+
+    private User saveUser(User user){
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long userId){
+        userRepository.delete(userId);
     }
 
     public List<User> getAllUsers(){
@@ -48,6 +82,23 @@ public class UserService implements UserDetailsService{
     }
 
     public User getUser(long id) { return userRepository.findOne(id); }
+
+    public User addUserRole(Long idUser, String roleName){
+        User user = this.getUser(idUser);
+        Role role = this.roleRepository.findByName(roleName);
+        user.addUserRole(role);
+        return user;
+    }
+
+    public User deleteUserRole(Long idUser, String roleName){
+        User user = this.getUser(idUser);
+        user.deleteUserRole(roleName);
+        return this.saveUser(user);
+    }
+
+    public List<Role> getAllRoles(){
+        return roleRepository.findAll();
+    }
 
     /* SPRING SECURITY */
     @Override

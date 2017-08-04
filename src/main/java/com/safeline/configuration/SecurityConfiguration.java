@@ -55,14 +55,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             "/css/**",
             "/js/**",
             "/img/**",
+            "/font-awesome-4.7.0/**",
             "/i18n/**",
             "/about/**",
-            "/login/**",
+            "/signin/**",
             "/contact/**",
             "/error/**/*",
             "/console/**",
-            "/users/**",
-            "/ajax/users/**",
+            "/userManagement/**",
+            "/ajax/userManagement/**",
             "/signup/**",
             "/sourcelist/**"
     };
@@ -76,7 +77,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             .httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint) //Habilitamos la seguridad en el api rest
                 .and()
             .formLogin() //a login form is showed when no authenticated request
-                .loginPage("/login")
+                .loginPage("/signin")
                 //.failureUrl("/login?error")
                 .failureHandler(customAuthenticationFailureHandler) //en vez de la linea anterior, ponemos un custom para controlar si la cuenta esta habilitada
                 .defaultSuccessUrl("/index")
@@ -90,7 +91,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
                 .and()
             .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //necesario ponerlo así en vez de .logoutUrl("/logout") cuando .csrf() esta habilitado, ya que tendriamos que hacer un post en ese caso
-                .logoutSuccessUrl("/login")
+                .logoutSuccessUrl("/signin")
                 .deleteCookies("remember-me")
                 .permitAll()
                 .and()
@@ -114,9 +115,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             String username = request.getParameter("email");
 
             if (exception instanceof DisabledException)
-                getRedirectStrategy().sendRedirect(request, response, "/login?disabled=true&email=" + username);    //aparte del error le pasamos el email para que no se borre cada vez que falla el login
+                getRedirectStrategy().sendRedirect(request, response, "/signin?disabled=true&email=" + username);    //aparte del error le pasamos el email para que no se borre cada vez que falla el signin
             else
-                getRedirectStrategy().sendRedirect(request, response, "/login?error=true&email=" + username);
+                getRedirectStrategy().sendRedirect(request, response, "/signin?error=true&email=" + username);
         }
     }
 }

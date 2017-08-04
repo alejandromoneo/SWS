@@ -5,7 +5,7 @@
 
 </style>
 <body>
-<div th:replace="common/header :: navbar(signup)"/>
+<div th:replace="common/body :: navbar(signup)"/>
 
 <div class="container">
     <form method="post" th:action="@{/signup}" th:object="${user}">
@@ -17,7 +17,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                    <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="firstName" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
+                    <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
                 </div>
                 <div th:if="${#fields.hasErrors('firstName')}" class="form-control-feedback" th:text="#{signup.error.firstName}"></div>
             </div>
@@ -27,7 +27,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                    <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="lastName" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
+                    <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
                 </div>
                 <div th:if="${#fields.hasErrors('lastName')}" class="form-control-feedback" th:text="#{signup.error.lastName}"></div>
             </div>
@@ -37,7 +37,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                    <input th:field="*{email}" type="email" th:class="${#fields.hasErrors('email')} ? 'form-control form-control-danger' : (${user.email == null} ? 'form-control' : (${emailExists} ? 'form-control form-control-warning' : 'form-control form-control-success'))" id="email" th:placeholder="#{signup.placeholder.email}" required="required"/>
+                    <input th:field="*{email}" type="email" th:class="${#fields.hasErrors('email')} ? 'form-control form-control-danger' : (${user.email == null} ? 'form-control' : (${emailExists} ? 'form-control form-control-warning' : 'form-control form-control-success'))" th:placeholder="#{signup.placeholder.email}" required="required"/>
                 </div>
                 <div th:if="${#fields.hasErrors('email')}" class="form-control-feedback" th:text="#{signup.error.email}"></div>
                 <div th:if="${emailExists}" class="form-control-feedback" th:text="#{signup.error.emailExists}"></div>
@@ -48,7 +48,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                    <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="password" th:placeholder="#{signup.placeholder.password}" required="required"/>
+                    <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" th:placeholder="#{signup.placeholder.password}" required="required"/>
                 </div>
                 <div class="form-check">
                     <label class="form-check-label" style="margin-top: 4px;">
@@ -63,7 +63,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
-                    <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="company" th:placeholder="#{signup.placeholder.company}"/>
+                    <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" th:placeholder="#{signup.placeholder.company}"/>
                 </div>
                 <div th:if="${#fields.hasErrors('company')}" class="form-control-feedback" th:text="#{signup.error.company}"></div>
             </div>
@@ -73,7 +73,7 @@
             <div class="col-sm-6">
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
-                    <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="phone" th:placeholder="#{signup.placeholder.phone}" required="required"/>
+                    <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" th:placeholder="#{signup.placeholder.phone}" required="required"/>
                 </div>
                 <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
             </div>
@@ -85,7 +85,7 @@
         <!-- / -->
         <div class="form-group row">
             <div class="col-sm-6 offset-2">
-                <button type="submit" class="btn btn-primary btn-lg btn-block login-button" th:text="#{signup.button.signup}"></button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" th:text="#{signup.button.signup}"></button>
             </div>
         </div>
     </form>
