@@ -63,6 +63,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
             "/error/**/*",
             "/console/**",
             "/userManagement/**",
+            "/index",
             "/ajax/userManagement/**",
             "/signup/**",
             "/sourcelist/**"

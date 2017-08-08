@@ -1,5 +1,138 @@
+.input-group-addon{
+    width: 42px;
+}
+
+.my-main {
+    margin-top: 30px;
+    min-height: 100rem;
+    margin-bottom: 100px;
+}
+
 /* REMOVE LATERAL PADDING IN DATATABLES */
 .table-responsive .container-fluid{
     padding-left: 0;
     padding-right: 0;
 }
+/* END REMOVE LATERAL PADDING IN DATATABLES */
+
+/* NAVBAR */
+@media(max-width:375px) {
+    .navbar.navbar-toggleable-md.navbar-inverse.bg-inverse.align-middle {
+        padding: .5rem .5rem;
+    }
+}
+/* END NAVBAR */
+
+/* SLIDER BAR */
+body {
+    overflow-x: hidden;
+    background-color: #292b2c!important;
+}
+
+#my-wrapper {
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#my-wrapper.toggled {
+    padding-left: 250px;
+}
+
+#my-sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 0;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    background-color: #292b2c!important;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#my-wrapper.toggled #my-sidebar-wrapper {
+    width: 250px;
+}
+
+#my-page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding-top: 15px;
+    background-color: #ffffff;
+}
+
+#my-wrapper.toggled #my-page-content-wrapper {
+    position: absolute;
+    margin-right: -250px;
+}
+
+#my-sidebar-wrapper .list-group a{
+    color: #999999;
+    white-space: nowrap;
+    display: block;
+}
+
+#my-sidebar-wrapper .list-group a:hover{
+    color: rgb(255, 255, 255);
+}
+
+#my-sidebar-wrapper .list-group-item.active{
+    background-color:#101112!important;
+    border-color: transparent;
+}
+
+@media(min-width:992px) {
+    #my-wrapper {
+        padding-left: 250px;
+    }
+
+    #my-wrapper.toggled {
+        padding-left: 0;
+    }
+
+    #my-sidebar-wrapper {
+        width: 250px;
+    }
+
+    #my-wrapper.toggled #my-sidebar-wrapper {
+        width: 0;
+    }
+
+    #my-page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+    }
+
+    #my-wrapper.toggled #my-page-content-wrapper {
+        position: relative;
+    }
+}
+/* END SLIDER BAR */
+
+/* FOOTER */
+footer{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    height: 60px;
+}
+
+footer i, footer{
+    color:rgba(255,255,255,.5);
+    font-weight: lighter;
+}
+
+footer a{
+    color: #5fa125;
+}
+
+footer a:focus, footer a:hover{
+    color:#D83438;
+}
+
+/* END FOOTER */

@@ -5,454 +5,460 @@
 
 </style>
 <body>
-<div th:replace="common/body :: navbar(signin)"/>
+<div th:replace="common/body :: navbar(userManagement)"/>
 
-<div class="container main">
-    <div class="card">
-        <div class="card-header" th:inline="text">
-            <i class="fa fa-table" aria-hidden="true"></i>
-            [[#{userManagement.cardHeader.userManagement}]]
-            <button type="submit" id="my-button-add" class="btn btn-outline-success btn-sm float-right">
-                <i class="fa fa-plus" aria-hidden="true"></i> [[#{common.add}]]
-            </button>
-            <script>
-                $(function() {
-                    $("#my-button-add").click(function () {
-                        $("#my-userManagement-container-modal-user").load('/ajax/userManagement/addUser/', function (response, status, xhr) {
-                            if (status == "success")
-                                $("#my-userManagement-container-modal-user").modal();
-                        });
-                    });
-                });
-            </script>
-        </div>
-        <div class="card-block">
-            <div class="table-responsive" id="my-userManagement-container-dataTable-user">
-                <table th:fragment="userDataTable" id="my-userManagement-fragment-dataTable-user" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <td/>
-                            <td th:text="#{signup.label.firstName}"/>
-                            <td th:text="#{signup.label.lastName}"/>
-                            <td th:text="#{signup.label.email}"/>
-                            <td th:text="#{signup.label.company}"/>
-                            <td th:text="#{userManagement.label.enabled}"/>
-                            <td/>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr data-th-each="user : ${userList}">
-                            <td data-th-text="${user.id}"/>
-                            <td data-th-text="${user.firstName}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
-                            <td data-th-text="${user.lastName}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
-                            <td data-th-text="${user.email}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
-                            <td data-th-text="${user.company}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
-                            <td data-th-text="${user.enabled} ? #{common.yes} : #{common.no}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
-                            <td class="text-center">
-                                <div class="btn-group" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-outline-info btn-sm" th:onclick="'viewUser(' + ${user.id} + ')'">
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-success btn-sm my-button-edit" th:onclick="'editUser(' + ${user.id} + ')'">
-                                        <i class="fa fa-edit" aria-hidden="true"></i>
-                                    </button>
-                                    <form class="btn-group my-userManagement-dataTable-form-delete" method="post">
-                                        <input type="hidden" th:value="${user.id}" name="userId"/>
-                                        <button type="button" onclick="deleteUser(this)" class="btn btn-outline-danger btn-sm">
-                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <script th:inline="javascript">
-                        /*<![CDATA[*/
+<div id="my-wrapper">
+    <div th:replace="common/body :: slidebar"/>
+
+    <div id="my-page-content-wrapper">
+        <div class="container my-main">
+            <div class="card">
+                <div class="card-header" th:inline="text">
+                    <i class="fa fa-table" aria-hidden="true"></i>
+                    [[#{userManagement.cardHeader.userManagement}]]
+                    <button type="submit" id="my-button-add" class="btn btn-outline-success btn-sm float-right">
+                        <i class="fa fa-plus" aria-hidden="true"></i> [[#{common.add}]]
+                    </button>
+                    <script>
                         $(function() {
-                            $("#my-userManagement-fragment-dataTable-user").DataTable({
-                                "stateSave": true,
-                                "columnDefs": [
-                                    {
-                                        "targets": 0,
-                                        "visible": false,
-                                        "searchable": true,
-                                        "orderable": false
-                                    },
-                                    {
-                                    "targets": 6,
-                                    "visible": true,
-                                    "searchable": false,
-                                    "orderable": false
-                                    }
-                                ],
-                                "language": {
-                                    "sProcessing":    [[#{dataTables.processing}]],
-                                    "sLengthMenu":    [[#{dataTables.lengthMenu}]],
-                                    "sZeroRecords":   [[#{dataTables.zeroRecords}]],
-                                    "sEmptyTable":    [[#{dataTables.emptyTable}]],
-                                    "sInfo":           [[#{dataTables.info}]],
-                                    "sInfoEmpty":      [[#{dataTables.infoEmpty}]],
-                                    "sInfoFiltered":   [[#{dataTables.infoFiltered}]],
-                                    "sInfoPostFix":    "",
-                                    "sSearch":         [[#{dataTables.search}]],
-                                    "sUrl":            "",
-                                    "sInfoThousands":  ",",
-                                    "sLoadingRecords": [[#{dataTables.loadingRecords}]],
-                                    "oPaginate": {
-                                        "sFirst":    [[#{dataTables.paginateFirst}]],
-                                        "sLast":    [[#{dataTables.paginateLast}]],
-                                        "sNext":    [[#{dataTables.paginateNext}]],
-                                        "sPrevious": [[#{dataTables.paginatePrevious}]]
-                                    }
-                                }
+                            $("#my-button-add").click(function () {
+                                $("#my-userManagement-container-modal-user").load('/ajax/userManagement/addUser/', function (response, status, xhr) {
+                                    if (status == "success")
+                                        $("#my-userManagement-container-modal-user").modal();
+                                });
                             });
                         });
-
-                        function viewUser(id) {
-                            $("#my-userManagement-container-modal-user").load('/ajax/userManagement/getUser/' + id, function(response, status, xhr ) {
-                                if (status == "success") {
-                                    $("#my-userManagement-container-modal-user").modal();
-                                    enableUserInputs(false);
-                                }
-                            });
-                        }
-
-                        function editUser(id) {
-                            $("#my-userManagement-container-modal-user").load('/ajax/userManagement/getUser/' + id, function(response, status, xhr ) {
-                                if (status == "success") {
-                                    $("#my-userManagement-container-modal-user").modal();
-                                    enableUserInputs(true);
-                                }
-                            });
-                        }
-
-                        function deleteUser(scope) {
-                            confirmModal(function (result){
-                                if (result)
-                                    $("#my-userManagement-container-dataTable-user").load('/ajax/userManagement/deleteUser', $(scope).parent().serializeArray());
-                            }, "large",[[#{confirm.modal.delete.message}]], [[#{confirm.modal.delete.title}]]);
-                        }
-
-                        function enableUserInputs(isEnabled) {
-                            $(".my-userManagement-disabled-when-viewUser").prop("disabled", !isEnabled);
-                            $(".my-userManagement-readonly-when-viewUser").prop("readonly", !isEnabled);
-                            $(".my-userManagement-hidden-when-viewUser").css("display", function(){ if (isEnabled) return ""; else return "none";});
-                        }
-                        /*]]>*/
                     </script>
-                </table>
-            </div>
-        </div>
-
-        <div id="my-userManagement-container-modal-user" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
-
-            <div th:fragment="userAddForm" class="modal-dialog modal-lg" th:if="${user}">
-
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" th:text="#{userManagement.modalTitle.newUser}"/>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="my-userManagement-form-userAdd" method="post" th:action="@{/signup}" th:object="${user}">
-                            <div th:class="${#fields.hasErrors('firstName')} ? 'form-group row has-danger' : (${user.firstName == null} ? 'form-group row' : 'form-group row has-success')">
-                                <label for="firstName" class="col-sm-3 col-form-label" th:text="#{signup.label.firstName}"></label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                        <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="firstName" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('firstName')}" class="form-control-feedback" th:text="#{signup.error.firstName}"></div>
-                                </div>
-                            </div>
-                            <div th:class="${#fields.hasErrors('lastName')} ? 'form-group row has-danger' : (${user.lastName == null} ? 'form-group row' : 'form-group row has-success')">
-                                <label for="lastName" class="col-sm-3 col-form-label" th:text="#{signup.label.lastName}"></label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                        <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="lastName" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('lastName')}" class="form-control-feedback" th:text="#{signup.error.lastName}"></div>
-                                </div>
-                            </div>
-                            <div th:class="${#fields.hasErrors('email')} ? 'form-group row has-danger' : (${user.email == null} ? 'form-group row' : (${emailExists} ? 'form-group row has-warning' : 'form-group row has-success'))">
-                                <label for="email" class="col-sm-3 col-form-label" th:text="#{signup.label.email}"></label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                                        <input th:field="*{email}" type="email" th:class="${#fields.hasErrors('email')} ? 'form-control form-control-danger' : (${user.email == null} ? 'form-control' : (${emailExists} ? 'form-control form-control-warning' : 'form-control form-control-success'))" id="email" th:placeholder="#{signup.placeholder.email}" required="required"/>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('email')}" class="form-control-feedback" th:text="#{signup.error.email}"></div>
-                                    <div th:if="${emailExists}" class="form-control-feedback" th:text="#{signup.error.emailExists}"></div>
-                                </div>
-                            </div>
-                            <div th:class="${#fields.hasErrors('password')} ? 'form-group row has-danger' : (${user.password == null} ? 'form-group row' : 'form-group row has-success')">
-                                <label for="password" class="col-sm-3 col-form-label" th:text="#{signup.label.password}"></label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                                        <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="password" th:placeholder="#{signup.placeholder.password}" required="required"/>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label" style="margin-top: 4px;">
-                                            <input type="checkbox" id="my-userManagement-checkbox-showPasswordAdd" class="form-check-input" th:text="#{signup.input.password}"/>
-                                        </label>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('password')}" class="form-control-feedback" th:text="#{signup.error.password}"></div>
-                                </div>
-                            </div>
-                            <div th:class="${#fields.hasErrors('company')} ? 'form-group row has-danger' : (${user.company == null} ? 'form-group row' : 'form-group row has-success')">
-                                <label for="company" class="col-sm-3 col-form-label" th:text="#{signup.label.company}"></label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
-                                        <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="company" th:placeholder="#{signup.placeholder.company}"/>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('company')}" class="form-control-feedback" th:text="#{signup.error.company}"></div>
-                                </div>
-                            </div>
-                            <div th:class="${#fields.hasErrors('phone')} ? 'form-group row has-danger' : (${user.phone == null} ? 'form-group row' : 'form-group row has-success')">
-                                <label for="phone" class="col-sm-3 col-form-label" th:text="#{signup.label.phone}">Phone</label>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
-                                        <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="phone" th:placeholder="#{signup.placeholder.phone}" required="required"/>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-3"/>
-                                <div class="col-sm-9">
-                                    <div class="input-group">
-                                        <button type="submit" class="btn btn-primary btn-block" th:text="#{common.register}"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
+                </div>
+                <div class="card-block">
+                    <div class="table-responsive" id="my-userManagement-container-dataTable-user">
+                        <table th:fragment="userDataTable" id="my-userManagement-fragment-dataTable-user" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <td/>
+                                    <td th:text="#{signup.label.firstName}"/>
+                                    <td th:text="#{signup.label.lastName}"/>
+                                    <td th:text="#{signup.label.email}"/>
+                                    <td th:text="#{signup.label.company}"/>
+                                    <td th:text="#{userManagement.label.enabled}"/>
+                                    <td/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-th-each="user : ${userList}">
+                                    <td data-th-text="${user.id}"/>
+                                    <td data-th-text="${user.firstName}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
+                                    <td data-th-text="${user.lastName}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
+                                    <td data-th-text="${user.email}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
+                                    <td data-th-text="${user.company}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
+                                    <td data-th-text="${user.enabled} ? #{common.yes} : #{common.no}" th:onclick="'viewUser(' + ${user.id} + ')'"/>
+                                    <td class="text-center">
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button type="button" class="btn btn-outline-info btn-sm" th:onclick="'viewUser(' + ${user.id} + ')'">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-success btn-sm my-button-edit" th:onclick="'editUser(' + ${user.id} + ')'">
+                                                <i class="fa fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <form class="btn-group my-userManagement-dataTable-form-delete" method="post">
+                                                <input type="hidden" th:value="${user.id}" name="userId"/>
+                                                <button type="button" onclick="deleteUser(this)" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <script th:inline="javascript">
+                                /*<![CDATA[*/
                                 $(function() {
-                                    $("#my-userManagement-checkbox-showPasswordAdd").click(function () {
-                                        if ($("#password").attr("type") == "password")
-                                            $("#password").attr("type", "text");
-                                        else
-                                            $("#password").attr("type", "password");
-                                    });
-
-                                    $('#my-userManagement-form-userAdd').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
-                                        e.preventDefault(); //anulamos el submit
-
-                                        $("#my-userManagement-container-modal-user").load('/ajax/userManagement/addUser', $(this).serializeArray(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
-                                            if (status == "success")
-                                                $("#my-userManagement-container-dataTable-user").load('/ajax/userManagement/getUsers');
-                                        });
+                                    $("#my-userManagement-fragment-dataTable-user").DataTable({
+                                        "stateSave": true,
+                                        "columnDefs": [
+                                            {
+                                                "targets": 0,
+                                                "visible": false,
+                                                "searchable": true,
+                                                "orderable": false
+                                            },
+                                            {
+                                            "targets": 6,
+                                            "visible": true,
+                                            "searchable": false,
+                                            "orderable": false
+                                            }
+                                        ],
+                                        "language": {
+                                            "sProcessing":    [[#{dataTables.processing}]],
+                                            "sLengthMenu":    [[#{dataTables.lengthMenu}]],
+                                            "sZeroRecords":   [[#{dataTables.zeroRecords}]],
+                                            "sEmptyTable":    [[#{dataTables.emptyTable}]],
+                                            "sInfo":           [[#{dataTables.info}]],
+                                            "sInfoEmpty":      [[#{dataTables.infoEmpty}]],
+                                            "sInfoFiltered":   [[#{dataTables.infoFiltered}]],
+                                            "sInfoPostFix":    "",
+                                            "sSearch":         [[#{dataTables.search}]],
+                                            "sUrl":            "",
+                                            "sInfoThousands":  ",",
+                                            "sLoadingRecords": [[#{dataTables.loadingRecords}]],
+                                            "oPaginate": {
+                                                "sFirst":    [[#{dataTables.paginateFirst}]],
+                                                "sLast":    [[#{dataTables.paginateLast}]],
+                                                "sNext":    [[#{dataTables.paginateNext}]],
+                                                "sPrevious": [[#{dataTables.paginatePrevious}]]
+                                            }
+                                        }
                                     });
                                 });
+
+                                function viewUser(id) {
+                                    $("#my-userManagement-container-modal-user").load('/ajax/userManagement/getUser/' + id, function(response, status, xhr ) {
+                                        if (status == "success") {
+                                            $("#my-userManagement-container-modal-user").modal();
+                                            enableUserInputs(false);
+                                        }
+                                    });
+                                }
+
+                                function editUser(id) {
+                                    $("#my-userManagement-container-modal-user").load('/ajax/userManagement/getUser/' + id, function(response, status, xhr ) {
+                                        if (status == "success") {
+                                            $("#my-userManagement-container-modal-user").modal();
+                                            enableUserInputs(true);
+                                        }
+                                    });
+                                }
+
+                                function deleteUser(scope) {
+                                    confirmModal(function (result){
+                                        if (result)
+                                            $("#my-userManagement-container-dataTable-user").load('/ajax/userManagement/deleteUser', $(scope).parent().serializeArray());
+                                    }, "large",[[#{confirm.modal.delete.message}]], [[#{confirm.modal.delete.title}]]);
+                                }
+
+                                function enableUserInputs(isEnabled) {
+                                    $(".my-userManagement-disabled-when-viewUser").prop("disabled", !isEnabled);
+                                    $(".my-userManagement-readonly-when-viewUser").prop("readonly", !isEnabled);
+                                    $(".my-userManagement-hidden-when-viewUser").css("display", function(){ if (isEnabled) return ""; else return "none";});
+                                }
+                                /*]]>*/
                             </script>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}"/>
+                        </table>
                     </div>
                 </div>
-            </div>
 
-            <div th:fragment="userForm" class="modal-dialog modal-lg" th:if="${user}">
+                <div id="my-userManagement-container-modal-user" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
 
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" th:inline="text">[[#{userManagement.modalTitle.userInformation}]] <span th:text="${user.firstName}"></span></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="my-userManagement-container-userInformation">
-                            <form th:fragment="userInformationForm" id="my-userManagement-fragment-form-userInformation" method="post" th:object="${user}">
-                                <input th:field="*{id}" type="hidden"/>
-                                <div th:class="${#fields.hasErrors('firstName')} ? 'form-group row has-danger' : 'form-group row'">
-                                    <label for="firstName" class="col-sm-3 col-form-label" th:text="#{signup.label.firstName}"></label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                            <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
-                                        </div>
-                                        <div th:if="${#fields.hasErrors('firstName')}" class="form-control-feedback" th:text="#{signup.error.firstName}"></div>
-                                    </div>
-                                </div>
-                                <div th:class="${#fields.hasErrors('lastName')} ? 'form-group row has-danger' : 'form-group row'">
-                                    <label for="lastName" class="col-sm-3 col-form-label" th:text="#{signup.label.lastName}"></label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
-                                            <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
-                                        </div>
-                                        <div th:if="${#fields.hasErrors('lastName')}" class="form-control-feedback" th:text="#{signup.error.lastName}"></div>
-                                    </div>
-                                </div>
-                                <div th:class="'form-group row'">
-                                    <label for="email" class="col-sm-3 col-form-label" th:text="#{signup.label.email}"></label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
-                                            <input th:field="*{email}" type="email" th:class="'form-control'" id="email" th:placeholder="#{signup.placeholder.email}" required="required" readonly="readonly"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div th:class="${#fields.hasErrors('company')} ? 'form-group row has-danger' : 'form-group row'">
-                                    <label for="company" class="col-sm-3 col-form-label" th:text="#{signup.label.company}"></label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
-                                            <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.company}"/>
-                                        </div>
-                                        <div th:if="${#fields.hasErrors('company')}" class="form-control-feedback" th:text="#{signup.error.company}"></div>
-                                    </div>
-                                </div>
-                                <div th:class="${#fields.hasErrors('phone')} ? 'form-group row has-danger' : 'form-group row'">
-                                    <label for="phone" class="col-sm-3 col-form-label" th:text="#{signup.label.phone}"></label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
-                                            <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.phone}" required="required"/>
-                                        </div>
-                                        <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="enabled" class="col-sm-3 col-form-label" th:text="#{userManagement.label.enabled}"></label>
-                                    <div class="col-sm-9">
-                                        <input th:field="*{enabled}" class="my-userManagement-disabled-when-viewUser" type="checkbox" th:placeholder="#{signup.placeholder.phone}"/>
-                                    </div>
-                                </div>
-                                <div class="form-group row my-userManagement-hidden-when-viewUser">
-                                    <div class="col-sm-3"/>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <button type="submit" class="btn btn-primary btn-block" th:text="#{common.save}"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script>
-                                    $(function() {
-                                        $('#my-userManagement-fragment-form-userInformation').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
-                                            e.preventDefault(); //anulamos el submit
+                    <div th:fragment="userAddForm" class="modal-dialog modal-lg" th:if="${user}">
 
-                                            $("#my-userManagement-container-userInformation").load('/ajax/userManagement/updateUserInformation', $("#my-userManagement-fragment-form-userInformation").serializeArray(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
-                                                if (status == "success")
-                                                    $("#my-userManagement-container-dataTable-user").load('/ajax/userManagement/getUsers');
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" th:text="#{userManagement.modalTitle.newUser}"/>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="my-userManagement-form-userAdd" method="post" th:action="@{/signup}" th:object="${user}">
+                                    <div th:class="${#fields.hasErrors('firstName')} ? 'form-group row has-danger' : (${user.firstName == null} ? 'form-group row' : 'form-group row has-success')">
+                                        <label for="firstName" class="col-sm-3 col-form-label" th:text="#{signup.label.firstName}"></label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                                <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="firstName" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('firstName')}" class="form-control-feedback" th:text="#{signup.error.firstName}"></div>
+                                        </div>
+                                    </div>
+                                    <div th:class="${#fields.hasErrors('lastName')} ? 'form-group row has-danger' : (${user.lastName == null} ? 'form-group row' : 'form-group row has-success')">
+                                        <label for="lastName" class="col-sm-3 col-form-label" th:text="#{signup.label.lastName}"></label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                                <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="lastName" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('lastName')}" class="form-control-feedback" th:text="#{signup.error.lastName}"></div>
+                                        </div>
+                                    </div>
+                                    <div th:class="${#fields.hasErrors('email')} ? 'form-group row has-danger' : (${user.email == null} ? 'form-group row' : (${emailExists} ? 'form-group row has-warning' : 'form-group row has-success'))">
+                                        <label for="email" class="col-sm-3 col-form-label" th:text="#{signup.label.email}"></label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                                <input th:field="*{email}" type="email" th:class="${#fields.hasErrors('email')} ? 'form-control form-control-danger' : (${user.email == null} ? 'form-control' : (${emailExists} ? 'form-control form-control-warning' : 'form-control form-control-success'))" id="email" th:placeholder="#{signup.placeholder.email}" required="required"/>
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('email')}" class="form-control-feedback" th:text="#{signup.error.email}"></div>
+                                            <div th:if="${emailExists}" class="form-control-feedback" th:text="#{signup.error.emailExists}"></div>
+                                        </div>
+                                    </div>
+                                    <div th:class="${#fields.hasErrors('password')} ? 'form-group row has-danger' : (${user.password == null} ? 'form-group row' : 'form-group row has-success')">
+                                        <label for="password" class="col-sm-3 col-form-label" th:text="#{signup.label.password}"></label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                                <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="password" th:placeholder="#{signup.placeholder.password}" required="required"/>
+                                            </div>
+                                            <div class="form-check">
+                                                <label class="form-check-label" style="margin-top: 4px;">
+                                                    <input type="checkbox" id="my-userManagement-checkbox-showPasswordAdd" class="form-check-input" th:text="#{signup.input.password}"/>
+                                                </label>
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('password')}" class="form-control-feedback" th:text="#{signup.error.password}"></div>
+                                        </div>
+                                    </div>
+                                    <div th:class="${#fields.hasErrors('company')} ? 'form-group row has-danger' : (${user.company == null} ? 'form-group row' : 'form-group row has-success')">
+                                        <label for="company" class="col-sm-3 col-form-label" th:text="#{signup.label.company}"></label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
+                                                <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="company" th:placeholder="#{signup.placeholder.company}"/>
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('company')}" class="form-control-feedback" th:text="#{signup.error.company}"></div>
+                                        </div>
+                                    </div>
+                                    <div th:class="${#fields.hasErrors('phone')} ? 'form-group row has-danger' : (${user.phone == null} ? 'form-group row' : 'form-group row has-success')">
+                                        <label for="phone" class="col-sm-3 col-form-label" th:text="#{signup.label.phone}">Phone</label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                                <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger' : (${user.firstName == null} ? 'form-control' : 'form-control form-control-success')" id="phone" th:placeholder="#{signup.placeholder.phone}" required="required"/>
+                                            </div>
+                                            <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-3"/>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <button type="submit" class="btn btn-primary btn-block" th:text="#{common.register}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $(function() {
+                                            $("#my-userManagement-checkbox-showPasswordAdd").click(function () {
+                                                if ($("#password").attr("type") == "password")
+                                                    $("#password").attr("type", "text");
+                                                else
+                                                    $("#password").attr("type", "password");
+                                            });
+
+                                            $('#my-userManagement-form-userAdd').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
+                                                e.preventDefault(); //anulamos el submit
+
+                                                $("#my-userManagement-container-modal-user").load('/ajax/userManagement/addUser', $(this).serializeArray(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
+                                                    if (status == "success")
+                                                        $("#my-userManagement-container-dataTable-user").load('/ajax/userManagement/getUsers');
+                                                });
                                             });
                                         });
-                                    });
-                                </script>
-                            </form>
+                                    </script>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}"/>
+                            </div>
                         </div>
+                    </div>
 
-                        <div id="my-userManagement-container-userPassword" class="my-userManagement-hidden-when-viewUser">
-                            <form th:fragment="userPasswordForm" id="my-userManagement-fragment-form-userPassword" method="post" th:object="${user}">
-                                <input th:field="*{id}" type="hidden"/>
-                                <div th:class="${#fields.hasErrors('password')} ? 'form-group row has-danger' : 'form-group row'">
-                                    <label for="password" class="col-sm-3 col-form-label" th:text="#{signup.label.password}"></label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                                            <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : 'form-control'" id="password" th:placeholder="#{signup.placeholder.password}" required="required"/>
+                    <div th:fragment="userForm" class="modal-dialog modal-lg" th:if="${user}">
+
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" th:inline="text">[[#{userManagement.modalTitle.userInformation}]] <span th:text="${user.firstName}"></span></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="my-userManagement-container-userInformation">
+                                    <form th:fragment="userInformationForm" id="my-userManagement-fragment-form-userInformation" method="post" th:object="${user}">
+                                        <input th:field="*{id}" type="hidden"/>
+                                        <div th:class="${#fields.hasErrors('firstName')} ? 'form-group row has-danger' : 'form-group row'">
+                                            <label for="firstName" class="col-sm-3 col-form-label" th:text="#{signup.label.firstName}"></label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                                    <input th:field="*{firstName}" type="text" th:class="${#fields.hasErrors('firstName')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.firstName}" required="required"/>
+                                                </div>
+                                                <div th:if="${#fields.hasErrors('firstName')}" class="form-control-feedback" th:text="#{signup.error.firstName}"></div>
+                                            </div>
                                         </div>
-                                        <div class="form-check">
-                                            <label class="form-check-label" style="margin-top: 4px;">
-                                                <input type="checkbox" id="my-userManagement-checkbox-showPassword" class="form-check-input" th:text="#{signup.input.password}"/>
-                                            </label>
+                                        <div th:class="${#fields.hasErrors('lastName')} ? 'form-group row has-danger' : 'form-group row'">
+                                            <label for="lastName" class="col-sm-3 col-form-label" th:text="#{signup.label.lastName}"></label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-user fa" aria-hidden="true"></i></span>
+                                                    <input th:field="*{lastName}" type="text" th:class="${#fields.hasErrors('lastName')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.lastName}" required="required"/>
+                                                </div>
+                                                <div th:if="${#fields.hasErrors('lastName')}" class="form-control-feedback" th:text="#{signup.error.lastName}"></div>
+                                            </div>
                                         </div>
-                                        <div class="input-group">
-                                            <button type="submit" class="btn btn-danger btn-block" th:text="#{userManagement.button.changePassword}"/>
+                                        <div th:class="'form-group row'">
+                                            <label for="email" class="col-sm-3 col-form-label" th:text="#{signup.label.email}"></label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-envelope" aria-hidden="true"></i></span>
+                                                    <input th:field="*{email}" type="email" th:class="'form-control'" id="email" th:placeholder="#{signup.placeholder.email}" required="required" readonly="readonly"/>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div th:if="${#fields.hasErrors('password')}" class="form-control-feedback" th:text="#{signup.error.password}"></div>
-                                    </div>
+                                        <div th:class="${#fields.hasErrors('company')} ? 'form-group row has-danger' : 'form-group row'">
+                                            <label for="company" class="col-sm-3 col-form-label" th:text="#{signup.label.company}"></label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-users" aria-hidden="true"></i></span>
+                                                    <input th:field="*{company}" type="text" th:class="${#fields.hasErrors('company')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.company}"/>
+                                                </div>
+                                                <div th:if="${#fields.hasErrors('company')}" class="form-control-feedback" th:text="#{signup.error.company}"></div>
+                                            </div>
+                                        </div>
+                                        <div th:class="${#fields.hasErrors('phone')} ? 'form-group row has-danger' : 'form-group row'">
+                                            <label for="phone" class="col-sm-3 col-form-label" th:text="#{signup.label.phone}"></label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-phone" aria-hidden="true"></i></span>
+                                                    <input th:field="*{phone}" type="text" th:class="${#fields.hasErrors('phone')} ? 'form-control form-control-danger my-userManagement-readonly-when-viewUser' : 'form-control my-userManagement-readonly-when-viewUser'" th:placeholder="#{signup.placeholder.phone}" required="required"/>
+                                                </div>
+                                                <div th:if="${#fields.hasErrors('phone')}" class="form-control-feedback" th:text="#{signup.error.phone}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="enabled" class="col-sm-3 col-form-label" th:text="#{userManagement.label.enabled}"></label>
+                                            <div class="col-sm-9">
+                                                <input th:field="*{enabled}" class="my-userManagement-disabled-when-viewUser" type="checkbox" th:placeholder="#{signup.placeholder.phone}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row my-userManagement-hidden-when-viewUser">
+                                            <div class="col-sm-3"/>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <button type="submit" class="btn btn-primary btn-block" th:text="#{common.save}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            $(function() {
+                                                $('#my-userManagement-fragment-form-userInformation').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
+                                                    e.preventDefault(); //anulamos el submit
+
+                                                    $("#my-userManagement-container-userInformation").load('/ajax/userManagement/updateUserInformation', $("#my-userManagement-fragment-form-userInformation").serializeArray(), function(response, status, xhr ) { /* $("#form-user").serializeArray() for post and $("#form-user").serialize() for make a get request */
+                                                        if (status == "success")
+                                                            $("#my-userManagement-container-dataTable-user").load('/ajax/userManagement/getUsers');
+                                                    });
+                                                });
+                                            });
+                                        </script>
+                                    </form>
                                 </div>
-                                <script>
-                                    $(function() {
-                                        $("#my-userManagement-checkbox-showPassword").click(function () {
-                                            if ($("#password").attr("type") == "password")
-                                                $("#password").attr("type", "text");
-                                            else
-                                                $("#password").attr("type", "password");
-                                        });
 
-                                        $('#my-userManagement-fragment-form-userPassword').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
-                                            e.preventDefault(); //anulamos el submit
+                                <div id="my-userManagement-container-userPassword" class="my-userManagement-hidden-when-viewUser">
+                                    <form th:fragment="userPasswordForm" id="my-userManagement-fragment-form-userPassword" method="post" th:object="${user}">
+                                        <input th:field="*{id}" type="hidden"/>
+                                        <div th:class="${#fields.hasErrors('password')} ? 'form-group row has-danger' : 'form-group row'">
+                                            <label for="password" class="col-sm-3 col-form-label" th:text="#{signup.label.password}"></label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
+                                                    <input th:field="*{password}" type="password" th:class="${#fields.hasErrors('password')} ? 'form-control form-control-danger' : 'form-control'" id="password" th:placeholder="#{signup.placeholder.password}" required="required"/>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label" style="margin-top: 4px;">
+                                                        <input type="checkbox" id="my-userManagement-checkbox-showPassword" class="form-check-input" th:text="#{signup.input.password}"/>
+                                                    </label>
+                                                </div>
+                                                <div class="input-group">
+                                                    <button type="submit" class="btn btn-danger btn-block" th:text="#{userManagement.button.changePassword}"/>
+                                                </div>
+                                                <div th:if="${#fields.hasErrors('password')}" class="form-control-feedback" th:text="#{signup.error.password}"></div>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            $(function() {
+                                                $("#my-userManagement-checkbox-showPassword").click(function () {
+                                                    if ($("#password").attr("type") == "password")
+                                                        $("#password").attr("type", "text");
+                                                    else
+                                                        $("#password").attr("type", "password");
+                                                });
 
-                                            $("#my-userManagement-container-userPassword").load('/ajax/userManagement/changeUserPassword', $(this).serializeArray());
-                                        });
-                                    });
-                                </script>
-                            </form>
-                        </div>
+                                                $('#my-userManagement-fragment-form-userPassword').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
+                                                    e.preventDefault(); //anulamos el submit
 
-                        <div id="my-userManagement-container-userRole">
-                            <div th:fragment="userRoleForm">
-                                <div class="form-group row">
-                                    <label for="phone" class="col-sm-3 col-form-label" th:text="#{userManagement.label.userRoles}"></label>
-                                    <div class="col-sm-9">
-                                        <ul class="list-group">
-                                            <li class="list-group-item justify-content-between" data-th-each="userRole : ${user.userRoles}">
-                                                <span data-th-text="${userRole.role.name}"/>
-                                                <form class="my-userManagement-form-userRole" method="post">
-                                                    <input type="hidden" th:value="${userRole.user.id}" name="userId"/>
-                                                    <input type="hidden" th:value="${userRole.role.name}" name="roleName"/>
-                                                    <button type="submit" class="btn-delete btn btn-outline-danger btn-sm my-userManagement-hidden-when-viewUser">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                                    $("#my-userManagement-container-userPassword").load('/ajax/userManagement/changeUserPassword', $(this).serializeArray());
+                                                });
+                                            });
+                                        </script>
+                                    </form>
                                 </div>
-                                <div class="form-group row my-userManagement-hidden-when-viewUser">
-                                    <div class="col-sm-3"/>
-                                    <div class="col-sm-9">
-                                        <form id="my-userManagement-form-role" method="post">
-                                            <div class="form-group">
-                                                <input type="hidden" th:value="${user.id}" name="userId"/>
+
+                                <div id="my-userManagement-container-userRole">
+                                    <div th:fragment="userRoleForm">
+                                        <div class="form-group row">
+                                            <label for="phone" class="col-sm-3 col-form-label" th:text="#{userManagement.label.userRoles}"></label>
+                                            <div class="col-sm-9">
                                                 <ul class="list-group">
-                                                    <li class="list-group-item justify-content-between">
-                                                        <select name="roleName" class="form-control" style="width: auto" required="required">
-                                                            <option data-th-each="role : ${roleList}" data-th-text="${role.name}"/>
-                                                        </select>
-                                                        <button type="submit" class="btn-success btn btn-outline-success btn-sm">
-                                                            <i class="fa fa-plus" aria-hidden="true"></i>
-                                                        </button>
+                                                    <li class="list-group-item justify-content-between" data-th-each="userRole : ${user.userRoles}">
+                                                        <span data-th-text="${userRole.role.name}"/>
+                                                        <form class="my-userManagement-form-userRole" method="post">
+                                                            <input type="hidden" th:value="${userRole.user.id}" name="userId"/>
+                                                            <input type="hidden" th:value="${userRole.role.name}" name="roleName"/>
+                                                            <button type="submit" class="btn-delete btn btn-outline-danger btn-sm my-userManagement-hidden-when-viewUser">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                        </form>
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </form>
+                                        </div>
+                                        <div class="form-group row my-userManagement-hidden-when-viewUser">
+                                            <div class="col-sm-3"/>
+                                            <div class="col-sm-9">
+                                                <form id="my-userManagement-form-role" method="post">
+                                                    <div class="form-group">
+                                                        <input type="hidden" th:value="${user.id}" name="userId"/>
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item justify-content-between">
+                                                                <select name="roleName" class="form-control" style="width: auto" required="required">
+                                                                    <option data-th-each="role : ${roleList}" data-th-text="${role.name}"/>
+                                                                </select>
+                                                                <button type="submit" class="btn-success btn btn-outline-success btn-sm">
+                                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <script>
+                                            $(function() {
+                                                $('.my-userManagement-form-userRole').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
+                                                    e.preventDefault(); //anulamos el submit
+
+                                                    $("#my-userManagement-container-userRole").load('/ajax/userManagement/deleteUserRole', $(this).serializeArray());
+                                                });
+
+                                                $('#my-userManagement-form-role').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
+                                                    e.preventDefault(); //anulamos el submit
+
+                                                    $("#my-userManagement-container-userRole").load('/ajax/userManagement/addUserRole', $(this).serializeArray());
+                                                });
+                                            });
+                                        </script>
                                     </div>
                                 </div>
-                                <script>
-                                    $(function() {
-                                        $('.my-userManagement-form-userRole').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
-                                            e.preventDefault(); //anulamos el submit
-
-                                            $("#my-userManagement-container-userRole").load('/ajax/userManagement/deleteUserRole', $(this).serializeArray());
-                                        });
-
-                                        $('#my-userManagement-form-role').on('submit', function(e){ //de esta forma obtenemos la validacion de los required de html5
-                                            e.preventDefault(); //anulamos el submit
-
-                                            $("#my-userManagement-container-userRole").load('/ajax/userManagement/addUserRole', $(this).serializeArray());
-                                        });
-                                    });
-                                </script>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}"/>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}"/>
-                    </div>
                 </div>
             </div>
-
         </div>
+        <div th:replace="common/body :: footer"/>
     </div>
 </div>
 

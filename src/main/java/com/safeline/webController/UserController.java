@@ -4,11 +4,14 @@ import com.safeline.entity.Role;
 import com.safeline.entity.User;
 import com.safeline.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 /**
  * Created by alejandromoneomartinez on 11/7/17.
@@ -54,7 +57,9 @@ public class UserController {
     }
 
     @GetMapping("/userManagement")
-    public String users(Model model){
+    public String users(Principal principal, Model model){
+
+        model.addAttribute("userLoggedName", userService.getUserLoggedName(principal.getName()));
 
         model.addAttribute("userList", userService.getAllUsers());
 

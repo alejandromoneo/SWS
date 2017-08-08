@@ -3,51 +3,73 @@
 <body>
 <!-- NAVBAR -->
 <div th:fragment="navbar(activeTab)">
-    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="#">
-            <img src="/img/log-whi.png" height="28" class="d-inline-block align-top" alt=""/>
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse align-middle">
+        <a class="navbar-brand navbar-inverse" href="#" style="padding: 0; margin: 0">
+            <img src="/img/log-whi.png" height="28" class="d-inline-block" style="margin-right: 14px; margin-left: 6px" alt=""/>
+            <button class="navbar-toggler d-inline-block" id="my-btn-toggle-wrapper" type="button" th:if="${activeTab != 'signin' and activeTab != 'signup'}">
+                <i class="navbar-toggler-icon fa fa-th" style="background-image: none;padding-top: 0.26em;" aria-hidden="true"></i>
+            </button>
+            <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="navbar-toggler-icon fa fa-sort-desc" style="background-image: none;" aria-hidden="true"></i>
+            </button>
         </a>
-        <div class="collapse navbar-collapse" id="navbarNav" th:if="${activeTab != 'signin' and activeTab != 'signup'}">
-            <ul class="navbar-nav mr-auto">
-                <li th:class="${activeTab == 'about'} ? 'nav-item active' : 'nav-item'">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li th:class="${activeTab == 'asd'} ? 'nav-item active' : 'nav-item'">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li th:class="${activeTab == 'asd'} ? 'nav-item active' : 'nav-item'">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li th:class="${activeTab == 'asd'} ? 'nav-item active' : 'nav-item'">
-                    <a class="nav-link disabled" href="#">Disabled</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto" th:inline="text">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" href="#" id="my-navbar-dropdown-languague" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-globe fa-lg" aria-hidden="true"></i> Language
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-            </ul>
-            <a th:href="@{/logout}" class="btn btn-outline-success my-2 my-sm-0">Logout</a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarNav" th:if="${activeTab == 'signin'} or ${activeTab == 'signup'}">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-globe fa-lg" aria-hidden="true"></i> Language
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu" aria-labelledby="my-navbar-dropdown-languague">
                         <a class="dropdown-item" th:href="@{?lang=es}"><span class="flag-icon flag-icon-es"></span> Español</a>
                         <a class="dropdown-item" th:href="@{?lang=en}"><span class="flag-icon flag-icon-gb"></span> English</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${activeTab != 'signin' and activeTab != 'signup'}">
+                    <a class="nav-link dropdown-toggle" href="#" id="my-navbar-dropdown-notifications" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-envelope" aria-hidden="true"></i> Notifications
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="my-navbar-dropdown-notifications">
+                        <a class="dropdown-item" th:href="@{?lang=es}">
+                            <div class="media-body">
+                                <h5 class="media-heading"><strong>Energetic report</strong>
+                                </h5>
+                                <p class="small text-muted"><i class="fa fa-clock-o"></i> Yesterday at 4:32 PM</p>
+                                <p>Lorem ipsum dolor sit amet, consectetur...</p>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">View all</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" th:if="${activeTab != 'signin' and activeTab != 'signup'}">
+                    <a class="nav-link dropdown-toggle" href="#" id="my-navbar-dropdown-alerts" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-bell" aria-hidden="true"></i> Alerts
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="my-navbar-dropdown-alerts">
+                        <li class="dropdown-item">
+                            <span class="badge badge-info">OK POWER ON</span>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="badge badge-warning">Fallo, energía VAC</span>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="badge badge-danger">Error de comunicación</span>
+                        </li>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">View all</a>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown" th:if="${activeTab != 'signin' and activeTab != 'signup'}">
+                    <a class="nav-link dropdown-toggle" href="#" id="my-navbar-dropdown-userLogged" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user-circle fa-lg" aria-hidden="true"></i> [[${userLoggedName}]]
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="my-navbar-dropdown-userLogged">
+                        <a class="dropdown-item" th:href="@{/profile}"><i class="fa fa-fw fa-user" aria-hidden="true"></i> &nbsp;Profile</a>
+                        <a class="dropdown-item" th:href="@{/emailNotifications}"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i> &nbsp;Inbox</a>
+                        <a class="dropdown-item" th:href="@{/settings}"><i class="fa fa-fw fa-cogs" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.settings}]]</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/logout}"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> &nbsp;Logout</a>
                     </div>
                 </li>
             </ul>
@@ -58,7 +80,51 @@
 </div>
 <!-- END NAVBAR -->
 
+<!-- NAVBAR -->
+<div th:fragment="slidebar">
+    <div id="my-sidebar-wrapper">
+        <div class="list-group" th:inline="text">
+            <a th:href="@{/dashboard}" class="list-group-item bg-inverse active"><i class="fa fa-fw fa-dashboard" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.dashboard}]]</a>
+            <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/userManagement}" class="list-group-item bg-inverse"><i class="fa fa-fw fa-id-card-o" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.userManagement}]]</a>
+            <a th:href="@{/unitManagement}" class="list-group-item bg-inverse"><i class="fa fa-fw fa-cloud" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.unitManagement}]]</a>
+            <a th:href="@{/analysis}" class="list-group-item bg-inverse"><i class="fa fa-fw fa-bar-chart" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.analysis}]]</a>
+            <a th:href="@{/reports}" class="list-group-item bg-inverse"><i class="fa fa-fw fa-print" aria-hidden="true"> </i> &nbsp;[[#{slidebar.a.reports}]]</a>
+            <a th:href="@{/emailNotifications}" class="list-group-item bg-inverse"><i class="fa fa-fw fa-envelope" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.emailNotifications}]]</a>
+            <a th:href="@{/settings}" class="list-group-item bg-inverse"><i class="fa fa-fw fa-cogs" aria-hidden="true"></i> &nbsp;[[#{slidebar.a.settings}]]</a>
+        </div>
+    </div>
 
+    <script>
+        $(function() {
+            $("#my-btn-toggle-wrapper").click(function (e) {
+                e.preventDefault();
+                $("#my-wrapper").toggleClass("toggled");
+            });
+        });
+    </script>
+</div>
+
+<!-- FOOTER -->
+<div th:fragment="footer">
+    <footer class="footer bg-inverse">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">© 1992 - 2017 Safeline. Todos los derechos reservados</div>
+                <div class="col-sm-6 text-right">Safeline Web Service V1.0.0</div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-sm-3"><i class="fa fa-html5 fa-lg" aria-hidden="true"></i>&nbsp;<i class="fa fa-css3 fa-lg" aria-hidden="true"></i></div>
+                <div class="col-sm-6 text-center"><a th:href="@{/analysis}">Aviso legal</a> | <a th:href="@{www.safeline.es}">www.safeline.es</a> | <a th:href="@{www.safeline.es/es/contact}">Contacto</a></div>
+                <div class="col-sm-3 text-right">
+                    <i class="fa fa-chrome fa-lg" aria-hidden="true"></i> <i class="fa fa-firefox fa-lg" aria-hidden="true"></i> <i class="fa fa-safari fa-lg" aria-hidden="true"></i> <i class="fa fa-edge fa-lg" aria-hidden="true"></i> <i class="fa fa-opera fa-lg" aria-hidden="true"></i>
+                </div>
+            </div>
+            <br/>
+        </div>
+    </footer>
+</div>
+<!-- END FOOTER -->
 
 </body>
 </html>
